@@ -1,3 +1,6 @@
-# ShellForge
+## Week 2 Features
 
-ShellForge is a Mini Bash Clone developed as an OSSP project.
+- Dynamic command input
+- Memory allocation using malloc()
+- Automatic buffer expansion using realloc()
+- Proper memory cleanup using free()
