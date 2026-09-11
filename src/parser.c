@@ -1,22 +1,49 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "parser.h"
+#include "../include/parser.h"
 
-int parse_command(char *input, char *args[])
+#define TOKEN_SIZE 64
+#define TOKEN_DELIMITERS " \t\r\n\a"
+
+char **parse_line(char *line)
 {
-    int argc = 0;
+    int size = TOKEN_SIZE;
+    int position = 0;
+    char **tokens = malloc(size * sizeof(char *));
 
-    char *token = strtok(input, " \t");
-
-    while (token != NULL && argc < MAX_ARGS - 1)
+    if (tokens == NULL)
     {
-        args[argc] = token;
-        argc++;
-
-        token = strtok(NULL, " \t");
+        perror("malloc");
+        exit(EXIT_FAILURE);
     }
 
-    args[argc] = NULL;
+    char *token = strtok(line, TOKEN_DELIMITERS);
 
-    return argc;
+    while (token != NULL)
+    {
+        tokens[position++] = token;
+
+        if (position >= size)
+        {
+            size *= 2;
+            tokens = realloc(tokens, size * sizeof(char *));
+
+            if (tokens == NULL)
+            {
+                perror("realloc");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        token = strtok(NULL, TOKEN_DELIMITERS);
+    }
+
+    tokens[position] = NULL;
+    return tokens;
+}
+
+void free_tokens(char **tokens)
+{
+    free(tokens);
 }
